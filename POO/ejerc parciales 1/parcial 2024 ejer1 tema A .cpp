@@ -1,133 +1,133 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-
 class Entrada{
 private:
-	int m_numAsiento;
+	int m_numeroAsiento;
 	string m_tipo;
 	float m_precio;
-	bool m_estado;
+	bool m_disponibilidad;
+
 public:
-	Entrada(int numAsiento, string tipo, float precio){
-		m_numAsiento = numAsiento;
-		m_tipo= tipo;
+	Entrada(int numeroAsiento, string Tipo, float precio){
+		m_numeroAsiento = numeroAsiento;
+		m_tipo = Tipo;
 		m_precio = precio;
-		m_estado = false;
+		m_disponibilidad = true; //siempre que diga true es porque no hay nadie
 	}
 	
-	float consultarPrecio(){
+	int numeroAsiento(){
+		return m_numeroAsiento;
+	}
+		
+	float verPrecio(){
 		return m_precio;
-	}
-		
-	bool verEstado(){
-		return m_estado;
-	}
-		
-	void cambiarEstado(bool tipo){
-		m_estado = tipo;
 	}
 		
 	string verTipo(){
 		return m_tipo;
 	}
-	
-	int verNumero(){
-		return m_numAsiento;
+		
+	bool verEstado(){
+		return m_disponibilidad;
+	}
+		
+	bool comprarAsiento(){
+		if(m_disponibilidad){
+			m_disponibilidad = false;
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
-	float verPrecio(){
-		return m_precio;
-	}
+		
 };
-
 
 class Show{
 private:
 	string m_nombre;
 	vector <Entrada> entradas;
+	
 public:
 	Show(string nombre){
 		m_nombre = nombre;
 	}
 	
-	string consultarNombre(){
+	string nombre(){
 		return m_nombre;
 	}
 		
 	void habilitarEntradas(string tipo, float precio, int desde, int hasta){
-		
-		for(int i = desde; i<hasta ; i++){
-			entradas.push_back(Entrada(i,tipo, precio));
+		for(int i = desde; i<hasta; i++){
+			entradas.push_back(Entrada (i, tipo, precio));
 		}
-		
 	}
 		
 	bool venderEntrada(int num){
-		
 		for(int i = 0; i<entradas.size(); i++){
-			if(num == entradas[i].verNumero() and entradas[i].verEstado() == false){
-				entradas[i].cambiarEstado(true);
-				return true;
+			if(entradas[i].numeroAsiento() == num){
+				if(entradas[i].verEstado()){
+					entradas[i].comprarAsiento();
+					return true;
+				}else{
+					return false;
+				}
 			}
-			
 		}
 		return false;
-	}
-
-	vector <Entrada> &listaEntradas(){
+	};
+		
+	vector <Entrada> verLista(){
 		return entradas;
 	}
 		
-	float calRecaudacion(){
-		float sumaVendidas = 0.0;
-
+	float calcRecaudacion(){
+		float sumRec = 0.0;
 		
 		for(int i = 0; i<entradas.size(); i++){
-			if(entradas[i].verEstado()){
-				sumaVendidas += entradas[i].verPrecio();
+			if(entradas[i].verEstado()== false){
+				sumRec +=entradas[i].verPrecio();
 			}
 		}
-		return sumaVendidas;
+		return sumRec;
 	}
 };
 
 
 
-int main(int argc, char *argv[]) {
-	Show primerFun("Susy plus plus y los compiladores en vivo");
-	
-	primerFun.habilitarEntradas("platea", 15000, 100, 199);
-	primerFun.habilitarEntradas("palco", 8000, 500, 650);
-	
-	int cantEntradasVender = 0;
-	cout<<"cuantas entradas desea comprar";
-	cin>>cantEntradasVender;
 
-	cout<<"lista de entradas disponibles: "<<endl;
-	vector <Entrada> &entradas = primerFun.listaEntradas();;
+
+int main(int argc, char *argv[]) {
+	Show susy("susy plus plus y los compiladores en vivo");
+	susy.habilitarEntradas("platea", 15000, 100, 199);
+	susy.habilitarEntradas("palco", 8000, 500, 600);
 	
-	int numEntrada;
 	
-	for(int i = 0; i<cantEntradasVender; i++){
-		
-		for(int i = 0; i<entradas.size(); i++){
-			if(!entradas[i].verEstado()){
-				cout<<"numero entrada: "<<entradas[i].verNumero()<<" tipo de entrada: "<<entradas[i].verTipo() << " precio:" << entradas[i].verPrecio()<<endl;
+	cout<<"cuantas entradas desea comprar";
+	int cant;
+	cin>>cant;
+	cout<<"lista de entradas disponibles";
+	
+	
+	for(int j = 0; j < cant; j++){
+		int numEntrada = 0;
+		for(int i = 0; i<susy.verLista().size(); i++){
+			if(susy.verLista()[i].verEstado()){
+				cout<<"num: "<<susy.verLista()[i].numeroAsiento()<<" tipo: "<<susy.verLista()[i].verTipo()<<" precio: "<<susy.verLista()[i].verPrecio();
 			}
 		}
-		cout<<"ingrese el numero de entrada que desea comprar: ";
+		
 		cin>>numEntrada;
-		bool comprobarDisponbible = primerFun.venderEntrada(numEntrada);
-		if(comprobarDisponbible){
-			cout<<"la entrada se compro con exito, continue"<<endl;
+		if(susy.venderEntrada(numEntrada)){
+			cout<<"se pudo realizar la compra, continue";
 		}else{
-			cout<<"entrada no disponible"<<endl;
+			cout<<"no se pudo realizar la compra";
 		}
+		
 	}
-	
-	cout<<"recaudacion del show : "<<primerFun.calRecaudacion();
-	
+
+	cout<<" recaudacion del show"<<susy.calcRecaudacion();
 	return 0;
 }
 
