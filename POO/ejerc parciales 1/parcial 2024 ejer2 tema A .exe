@@ -1,0 +1,51 @@
+#include <iostream>
+using namespace std;
+
+int *copia_sin_x(int *v, int x, int &tamanio){
+
+	int contAparencia = 0;
+	for(int i = 0; i<tamanio; i++ ){
+		if(v[i] == x){
+			contAparencia +=1;
+		}
+	}
+	int nuevoTamanio = tamanio - contAparencia;
+	int *b = new int[nuevoTamanio];
+	
+	
+	int indiceB = 0;
+	for(int i = 0; i< tamanio; i++){
+		if(v[i] != x){
+			
+			b[indiceB] = v[i];	
+			indiceB +=1;
+		}
+	}
+	tamanio = nuevoTamanio;
+	return b;
+}
+
+int main(int argc, char *argv[]) {
+	cout<<"cuantos enteros desea ingresar: ";
+	int tamanio;
+	
+	cin >>tamanio;
+	
+	int *A = new int [tamanio];
+	cout<<"ingrese todos los enteros";
+	for(int i = 0; i<tamanio; i++){
+		cin>>A[i];
+	}
+	
+	
+	cout<<"ingrese el entero que quiera eliminar";
+	int x;
+	cin>>x;
+	int *B = copia_sin_x(A,x,tamanio);
+	cout<<"nueva lista: ";
+	for(int i = 0; i<tamanio; i++){
+		cout<<B[i];
+	}
+	return 0;
+}
+
